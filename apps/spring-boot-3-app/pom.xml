@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>spring-boot-3-app</artifactId>
+
+    <properties>
+        <docker-image-name>spring-boot-3-app</docker-image-name>
+        <docker-image-version>latest</docker-image-version>
+    </properties>
+
+    <parent>
+        <groupId>io.graversen</groupId>
+        <artifactId>parent</artifactId>
+        <version>0.0.0</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <configuration>
+                    <buildArgs>
+                        <JAR_FILE>maven/${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>
+                    <images>
+                        <image>
+                            <name>${docker-registry}/${docker-image-name}:${docker-image-version}</name>
+                            <build>
+                                <contextDir>${basedir}</contextDir>
+                                <dockerFile>${basedir}/../../docker/MinimalJRE21.Dockerfile</dockerFile>
+                                <assembly>
+                                    <descriptorRef>artifact-with-dependencies</descriptorRef>
+                                </assembly>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
