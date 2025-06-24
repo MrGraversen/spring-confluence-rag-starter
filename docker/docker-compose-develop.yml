@@ -1,8 +1,32 @@
-version: '3.8'
-name: spring-boot-3-project
+version: "3.9"
+name: spring-confluence-rag-starter
 
 services:
+  confluence-vector-db:
+    image: pgvector/pgvector:pg17
+    container_name: confluence-vector-db
+    ports: [ "5432:5432" ]
+    environment:
+      POSTGRES_USER: confluence
+      POSTGRES_PASSWORD: confluence
+      POSTGRES_DB: confluence
+    volumes:
+      - confluence_vector_db_data:/var/lib/postgresql/data
+      - ./confluence_init:/docker-entrypoint-initdb.d
+
+  confluence:
+    container_name: confluence
+    image: atlassian/confluence:9.2.5
+    ports: [ "8090:8090" ]
+    environment:
+      ATL_DB_TYPE: postgresql
+      ATL_JDBC_URL: jdbc:postgresql://confluence-vector-db:5432/confluence
+      ATL_JDBC_USER: confluence
+      ATL_JDBC_PASSWORD: confluence
+    depends_on: [ confluence-vector-db ]
+    volumes:
+      - confluence_home_data:/var/atlassian/application-data/confluence
 
 volumes:
-
-networks:
+  confluence_vector_db_data:
+  confluence_home_data:
