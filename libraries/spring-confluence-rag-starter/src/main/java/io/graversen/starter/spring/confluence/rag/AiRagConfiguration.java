@@ -15,6 +15,7 @@ import dev.langchain4j.rag.query.router.DefaultQueryRouter;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,6 +25,42 @@ import java.util.List;
 @Slf4j
 @Configuration
 public class AiRagConfiguration {
+    @Bean
+    @ConditionalOnMissingBean
+    public ConfluenceIngestor confluenceIngestor(
+            SpringConfluenceRagProperties springConfluenceRagProperties,
+            ConfluenceApi confluenceApi,
+            EmbeddingStoreIngestor embeddingStoreIngestor,
+            ConfluenceContentFormatter contentFormatter,
+            ConfluenceMetadataExtractor metadataExtractor
+    ) {
+        final var confluenceIngestor = new ConfluenceIngestor(
+                confluenceApi,
+                embeddingStoreIngestor,
+                springConfluenceRagProperties.getConfluence(),
+                contentFormatter,
+                metadataExtractor
+        );
+        log.info("✅ Initialized Confluence Ingestor");
+        return confluenceIngestor;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ConfluenceContentFormatter contentFormatter() {
+        final var contentFormatter = new Html2MarkdownContentFormatter();
+        log.info("✅ Initialized Content Formatter");
+        return contentFormatter;
+    }
+
+    @Bean
+    public ConfluenceMetadataExtractor metadataExtractor(SpringConfluenceRagProperties springConfluenceRagProperties) {
+        final var confluenceProperties = springConfluenceRagProperties.getConfluence();
+        final var metadataExtractor = new ConfluenceCitationsExtractor(confluenceProperties);
+        log.info("✅ Initialized Metadata Extractor");
+        return metadataExtractor;
+    }
+
     @Bean
     public OpenAiChatModelName chatModelName(SpringConfluenceRagProperties springConfluenceRagProperties) {
         final var chatModelProperties = springConfluenceRagProperties.getChatModel();
