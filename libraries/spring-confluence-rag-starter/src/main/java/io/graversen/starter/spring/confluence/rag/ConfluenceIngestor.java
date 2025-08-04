@@ -1,14 +1,11 @@
 package io.graversen.starter.spring.confluence.rag;
 
-import com.vladsch.flexmark.html2md.converter.FlexmarkHtmlConverter;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Safelist;
 
 import java.time.Duration;
 import java.time.Instant;
