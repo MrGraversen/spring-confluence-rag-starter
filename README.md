@@ -98,15 +98,15 @@ ai:
     confluence:
       rag:
         embedding-model:
-          overlap-fraction: 0.25
-          chunk-size: 512
-          model: text-embedding-3-small
+          overlap-fraction: 0.25           # How much each chunk overlaps with the previous one
+          chunk-size: 512                  # Max token length per document chunk
+          model: text-embedding-3-small    # OpenAI model used for embedding vectors
         confluence:
-          base-url: http://localhost:8090
-          username: martin
-          api-key: martin
+          base-url: http://localhost:8090  # Confluence base URL
+          username: martin                 # Username for Confluence API
+          api-key: martin                  # API token for authentication
           spaces:
-            - HC
+            - HC                          # Space keys to ingest (can list multiple)
         database:
           hostname: localhost
           port: 5432
@@ -114,20 +114,20 @@ ai:
           password: confluence
           username: confluence
         chatModel:
-          model: gpt-4o-mini
-          memory-tokens: 8192
-          meta-data-keys:
+          model: gpt-4o-mini               # OpenAI model used for chat responses
+          memory-tokens: 8192              # Max memory tokens to retain in conversation context
+          meta-data-keys:                  # Which attributes from the Confluence API to include in the context
             - pageTitle
             - pageUrl
-          system-prompt: |
+          system-prompt: |                 # The prompt that defines the AI Q&A behavior
             You are a helpful assistant that answers questions based on the content of Confluence pages.
             Answer the question based on the provided context clearly and concisely. Format using Markdown as appropriate.
             If you do not know the answer, explain that you do not know. Do not make up an answer or guess.
             Always cite the source of your information at the end of your message using the format:
             **Source**: [Page Title](Page URL)
-          temperature: 1.0
+          temperature: 1.0                # OpenAI temperature (reduce to increase determinism)
         open-ai:
-          api-key: sk...
+          api-key: sk...                  # Your OpenAI API key
 ```
 
 Finally, ingest your Confluence space and start asking questions.
