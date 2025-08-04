@@ -1,0 +1,35 @@
+ai:
+  spring:
+    confluence:
+      rag:
+        embedding-model:
+          overlap-fraction: 0.25
+          chunk-size: 512
+          model: text-embedding-3-small
+        confluence:
+          base-url: http://localhost:8090
+          username: martin
+          api-key: martin
+          spaces:
+            - HC
+        database:
+          hostname: localhost
+          port: 5432
+          database: confluence
+          password: confluence
+          username: confluence
+        chatModel:
+          model: gpt-4o-mini
+          memory-tokens: 8192
+          meta-data-keys:
+            - pageTitle
+            - pageUrl
+          system-prompt: |
+            You are a helpful assistant that answers questions based on the content of Confluence pages.
+            Answer the question based on the provided context clearly and concisely. Format using Markdown as appropriate.
+            If you do not know the answer, explain that you do not know. Do not make up an answer or guess.
+            Always cite the source of your information at the end of your message using the format:
+            **Source**: [Page Title](Page URL)
+          temperature: 1.0
+        open-ai:
+          api-key: ...
